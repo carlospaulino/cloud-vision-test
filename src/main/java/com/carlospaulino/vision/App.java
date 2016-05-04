@@ -2,11 +2,11 @@ package com.carlospaulino.vision;
 
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
-import com.google.api.services.vision.v1.model.AnnotateImageResponse;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
 import static com.carlospaulino.vision.BatchAnnotateImagesRequestFactory.fromParams;
 import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport;
@@ -31,15 +31,16 @@ public class App {
                                                  .annotate(fromParams(params))
                                                  .execute();
 
-        if (result.getResponses() != null) {
+        if (result.getResponses() != null && !result.getResponses().isEmpty()) {
             System.out.println(format("Labels for %s:", params.getFile().getName()));
-            for (AnnotateImageResponse response : result.getResponses()) {
-                for (EntityAnnotation entityAnnotation : response.getLabelAnnotations()) {
-                    System.out.println(entityAnnotation.getDescription());
-                }
+            List<EntityAnnotation> entityAnnotations = result.getResponses().get(0).getLabelAnnotations();
+            for (EntityAnnotation entityAnnotation : entityAnnotations) {
+                System.out.println(entityAnnotation.getDescription());
             }
-        } else {
-            System.out.println("Something went wrong");
+        } else if (result.getResponses().isEmpty()) {
+            System.out.println(format("No labels found for %s:", params.getFile().getName()));
+        } {
+            System.out.println("Something went wrong. Try again.");
         }
     }
 
