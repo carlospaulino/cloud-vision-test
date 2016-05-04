@@ -1,0 +1,24 @@
+group 'com.carlospaulino'
+version '1.0'
+
+apply plugin: 'application'
+
+repositories {
+  mavenCentral()
+}
+
+run {
+  classpath = sourceSets.main.runtimeClasspath
+  main = "com.carlospaulino.vision.App"
+
+  if (System.getProperty("args") != null) {
+    args System.getProperty("args").split()
+  }
+}
+
+dependencies {
+  compile 'com.google.api-client:google-api-client:1.21.0'
+  compile 'com.google.apis:google-api-services-vision:v1-rev15-1.21.0'
+  compile 'com.google.guava:guava:19.0'
+  compile 'com.beust:jcommander:1.48'
+}
